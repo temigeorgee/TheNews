@@ -28,33 +28,6 @@ export const comments = {
         },
       };
     },
-    //   editComment(state, payload) {
-    //     const newsComment = state.comments[payload.newsId];
-    //     const index = getExistingIndex(payload.id, newsComment);
-    //     newsComment[index] = payload;
-
-    //     return {
-    //       ...state,
-    //       error: "",
-    //       comments: {
-    //         ...state.comments,
-    //         [payload.newsId]: newsComment,
-    //       },
-    //     };
-    //   },
-
-    //   delete(state, payload) {
-    //     return {
-    //       ...state,
-    //       error: "",
-    //       comments: {
-    //         ...state.comments,
-    //         [payload.id]: state.comments[payload.id].filter(
-    //           (el) => el.id !== payload.comment.id
-    //         ),
-    //       },
-    //     };
-    //   },
   },
   effects: (dispatch) => ({
     async getAllCommentAsync(id) {
@@ -78,26 +51,5 @@ export const comments = {
         toast.dark(error);
       }
     },
-
-    //   async editCommentAsync(data) {
-    //     try {
-    //       const comment = await editComment(
-    //         data.newsId,
-    //         data.commentId,
-    //         data.body
-    //       );
-    //       dispatch.comments.editComment(comment);
-    //     } catch (error) {
-    //       showToast("error", error);
-    //     }
-    //   },
-    //   async deleteCommentAsync(data) {
-    //     try {
-    //       const comment = await deleteComment(data.newsId, data.commentId);
-    //       dispatch.comments.delete({ id: comment.newsId, comment });
-    //     } catch (error) {
-    //       showToast("error", error);
-    //     }
-    //   },
   }),
 };
