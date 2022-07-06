@@ -10,6 +10,8 @@ import { useDispatch, useSelector } from "react-redux";
 import Step1 from "../steps/step1";
 import Step2 from "../steps/step2";
 import CommentStep2 from "../steps/commentStep2";
+import { toast } from "react-toastify";
+import NewsService from "../../services/newsService";
 
 const Background = styled.div`
   width: 99.9%;
@@ -77,13 +79,10 @@ export const Modal = ({ showModal, setShowModal, comment, newsId }) => {
   const dispatch = useDispatch();
   const loadingState = useSelector((state) => state.loading);
   const [currentStep, setCurrentStep] = useState(0);
-  const [error, setError] = useState("");
-  const isLoaading = loadingState.models.news;
-  const [inputs, setInputs] = useState({
-    Author: "",
-    title: "",
-  });
-  const { Author, title } = inputs;
+  const [selectedFile, setSelectedFile] = useState("");
+  const [uploading, setUploading] = useState(false);
+  const [Img, setImg] = useState("");
+
   const modalRef = useRef();
   if (newsId === undefined) {
     newsId = Math.floor(Math.random() * 100);
@@ -119,23 +118,31 @@ export const Modal = ({ showModal, setShowModal, comment, newsId }) => {
   );
 
   // Handlers
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setInputs((prevState) => {
-      return { ...prevState, [name]: value };
-    });
+
+  const handlefileupload = (e) => {
+    setSelectedFile(URL.createObjectURL(e.target.files[0]));
   };
 
-  // const upload = async (link) => {
-  //   const res = await uploadNewsImage({ newsId, image: link });
-  //   if (res.status === 201) {
-  //     setImgUri(res.data.image);
-  //     showToast("success", "Image uploaded");
-  //     closeModal();
-  //   } else {
-  //     showToast("error", "failed to upload image");
-  //   }
-  // };
+  const upload = async () => {
+    console.log(selectedFile, "selected");
+
+    const formData = new FormData();
+    formData.append("newsId", newsId);
+    formData.append("image", selectedFile);
+    console.log(formData.get("image"), "formDatalinkkkkkk");
+    const res = await NewsService.uploadImage({
+      newsId: newsId,
+      image: selectedFile,
+    });
+    if (res.status === 201) {
+      setImg(res.data.image);
+      console.log(Img, "backend-img");
+      toast.dark("Image uploaded");
+      next();
+    } else {
+      toast.dark("opps an error occurred");
+    }
+  };
 
   const renderForm = () => {
     switch (currentStep) {
@@ -150,9 +157,16 @@ export const Modal = ({ showModal, setShowModal, comment, newsId }) => {
   const renderCommentForm = () => {
     switch (currentStep) {
       case 0:
-        return <Step1 next={next} newsId={newsId} />;
+        return <Step1 handlefileupload={handlefileupload} upload={upload} />;
       case 1:
-        return <CommentStep2 prev={prev} closeModal={closeModal} />;
+        return (
+          <CommentStep2
+            prev={prev}
+            closeModal={closeModal}
+            newsId={newsId}
+            Img={Img}
+          />
+        );
       default:
         return <Step1 next={next} newsId={newsId} />;
     }

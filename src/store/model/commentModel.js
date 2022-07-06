@@ -16,18 +16,18 @@ export const comments = {
       };
     },
 
-    //   addComment(state, payload) {
-    //     const newsComment = state.comments[payload.newsId];
-    //     newsComment.push(payload);
-    //     return {
-    //       ...state,
-    //       error: "",
-    //       comments: {
-    //         ...state.comments,
-    //         [payload.newsId]: newsComment,
-    //       },
-    //     };
-    //   },
+    createComment(state, payload) {
+      const newsComment = state.comments[payload.newsId];
+      newsComment.push(payload);
+      return {
+        ...state,
+        error: "",
+        comments: {
+          ...state.comments,
+          [payload.newsId]: newsComment,
+        },
+      };
+    },
     //   editComment(state, payload) {
     //     const newsComment = state.comments[payload.newsId];
     //     const index = getExistingIndex(payload.id, newsComment);
@@ -66,14 +66,18 @@ export const comments = {
       }
     },
 
-    //   async addCommentAsync(data) {
-    //     try {
-    //       const comment = await createComment(data.newsId, data.body);
-    //       dispatch.comments.addComment(comment);
-    //     } catch (error) {
-    //       showToast("error", error);
-    //     }
-    //   },
+    async createCommentAsync(data) {
+      try {
+        const comment = await CommentsService.createComment(
+          data.newsId,
+          data.body
+        );
+        console.log(comment);
+        dispatch.comments.createComment(comment);
+      } catch (error) {
+        toast.dark(error);
+      }
+    },
 
     //   async editCommentAsync(data) {
     //     try {
